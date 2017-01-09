@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Images</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Type search image name</string>
+    <string name="no_query_words">No query words</string>
+    <string name="do_nothing">Do nothing</string>
 </resources>
