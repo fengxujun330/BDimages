@@ -2,7 +2,6 @@ package com.xj.images.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,6 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
 
     @Override
     public MyRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i("alanMms", "type:" + viewType);
         MyRecyclerViewHolder viewHolder = new MyRecyclerViewHolder(LayoutInflater.from(mContext).inflate(R.layout.image_recycler_view_adapter_item, parent, false));
         return viewHolder;
     }

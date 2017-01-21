@@ -26,7 +26,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/search"
-            android:onClick="onClickView"
             android:id="@+id/id_search_btn"
             android:layout_weight="1"/>
     </LinearLayout>
