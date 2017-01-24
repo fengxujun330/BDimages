@@ -2,12 +2,7 @@ package com.xj.images.data;
 
 import com.xj.images.utils.OkHttpUtil;
 
-import java.io.IOException;
 import java.net.URLEncoder;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by ajun on 2017/1/21.
@@ -19,21 +14,7 @@ public class BaiduDataSourceImpl implements DataSource {
     private final static int PUR_PAGE_NUMBER = 30;
     @Override
     public String getData(String keyWord, int pageNumber) {
-        OkHttpClient client = OkHttpUtil.getInstance().getOkHttpClient();
-        Request request = new Request.Builder()
-                .url(getURL(keyWord, pageNumber))
-                .get()
-                .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if(response.isSuccessful()){
-                return response.body().string();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return  null;
-        }
-        return null;
+        return OkHttpUtil.useGetMethodGetData(getURL(keyWord,pageNumber));
     }
 
     private static String getURL(String queryWord, int pageNumber){
@@ -47,8 +28,8 @@ public class BaiduDataSourceImpl implements DataSource {
                 .append("&rn=").append(PUR_PAGE_NUMBER);
 
         if(0 >= width || 0 >= height){
-            sb.append("&width=").append("1920");
-            sb.append("&height=").append("1080");
+            sb.append("&width=").append(DEFAULT_WIDTH);
+            sb.append("&height=").append(DEFAULT_HEIGHT);
         }else{
             sb.append("&width=").append(width);
             sb.append("&height=").append(height);

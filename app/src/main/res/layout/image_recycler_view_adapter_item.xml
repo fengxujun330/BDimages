@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.facebook.drawee.view.SimpleDraweeView
+<ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="250dp"
+    android:scaleType="fitXY"
     android:id="@+id/recycler_view_adapter_item">
 
-</com.facebook.drawee.view.SimpleDraweeView>
+</ImageView>

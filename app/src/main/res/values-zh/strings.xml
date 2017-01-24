@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">图片</string>
     <string name="no_query_words">没有查询词</string>
-    <string name="search">百度一下</string>
+    <string name="search">搜索</string>
     <string name="search_hint">点击输入图片名字</string>
+    <string name="do_nothing">没什么做的</string>
 </resources>

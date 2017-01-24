@@ -5,8 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 import com.xj.images.R;
 import com.xj.images.beans.Image;
 
@@ -45,19 +46,19 @@ public class ImageAdapter extends BaseAdapter {
         if (null == convertView){
             convertView = LayoutInflater.from(mContext).inflate(R.layout.base_adapter_item,parent,false);
             viewHolder = new ViewHolder();
-            viewHolder.image1 = (SimpleDraweeView) convertView.findViewById(R.id.image1);
-            viewHolder.image2 = (SimpleDraweeView) convertView.findViewById(R.id.image2);
+            viewHolder.image1 = (ImageView) convertView.findViewById(R.id.image1);
+            viewHolder.image2 = (ImageView) convertView.findViewById(R.id.image2);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.image1.setImageURI(mImages.get(position * 2).getThumbURL());
-        viewHolder.image2.setImageURI(mImages.get(position * 2 + 1).getThumbURL());
+        Glide.with(mContext).load(mImages.get(position * 2).getImageURL()).into(viewHolder.image1);
+        Glide.with(mContext).load(mImages.get(position * 2 + 1).getImageURL()).into(viewHolder.image2);
         return convertView;
     }
 
     private static class ViewHolder{
-        com.facebook.drawee.view.SimpleDraweeView image1;
-        com.facebook.drawee.view.SimpleDraweeView image2;
+        ImageView image1;
+        ImageView image2;
     }
 }

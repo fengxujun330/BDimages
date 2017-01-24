@@ -1,46 +1,80 @@
 package com.xj.images.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by ajun on 2017/1/7.
  */
 
-public class Image {
-    private String thumbURL;
-    private String middleURL;
-    private String hoverURL;
+public class Image implements Parcelable{
+    private String imageURL;
+    private String imageThumbURL;
+    private String imageThumbBakURL;
 
-    public void setThumbURL(String thumbURL) {
-        this.thumbURL = thumbURL;
+    public Image(){
+
+    }
+    protected Image(Parcel in) {
+        imageURL = in.readString();
+        imageThumbURL = in.readString();
+        imageThumbBakURL = in.readString();
     }
 
-    public void setMiddleURL(String middleURL) {
-        this.middleURL = middleURL;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(imageURL);
+        dest.writeString(imageThumbURL);
+        dest.writeString(imageThumbBakURL);
     }
 
-    public void setHoverURL(String hoverURL) {
-        this.hoverURL = hoverURL;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public String getMiddleURL() {
+    public static final Creator<Image> CREATOR = new Creator<Image>() {
+        @Override
+        public Image createFromParcel(Parcel in) {
+            return new Image(in);
+        }
 
-        return middleURL;
-    }
+        @Override
+        public Image[] newArray(int size) {
+            return new Image[size];
+        }
+    };
 
     @Override
     public String toString() {
         return "Image{" +
-                "thumbURL='" + thumbURL + '\'' +
-                ", middleURL='" + middleURL + '\'' +
-                ", hoverURL='" + hoverURL + '\'' +
+                "imageURL='" + imageURL + '\'' +
+                ", imageThumbURL='" + imageThumbURL + '\'' +
+                ", imageThumbBakURL='" + imageThumbBakURL + '\'' +
                 '}';
     }
 
-    public String getHoverURL() {
-        return hoverURL;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public String getThumbURL() {
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
-        return thumbURL;
+    public String getImageThumbURL() {
+        return imageThumbURL;
+    }
+
+    public void setImageThumbURL(String imageThumbURL) {
+        this.imageThumbURL = imageThumbURL;
+    }
+
+    public String getImageThumbBakURL() {
+        return imageThumbBakURL;
+    }
+
+    public void setImageThumbBakURL(String imageThumbBakURL) {
+        this.imageThumbBakURL = imageThumbBakURL;
     }
 }
