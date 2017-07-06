@@ -59,7 +59,7 @@ public class MainActivity extends Activity implements ViewInterface{
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_SETTLING){
+                if(newState == RecyclerView.SCROLL_STATE_IDLE /*|| newState == RecyclerView.SCROLL_STATE_SETTLING*/){
                     int pos[] = mLayoutManager.findLastVisibleItemPositions(null);
                     if (null != pos && 0 < pos.length){
                         /*Log.i("alanMms", "images:" + mImages.size());

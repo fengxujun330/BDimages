@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     <ImageView
@@ -8,7 +8,43 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:id="@+id/image">
-
     </ImageView>
-</LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:id="@+id/image_from"
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/menu_bar"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
+        android:visibility="invisible"
+        android:gravity="center_horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/save_image"
+            android:text="保存"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/share_image"
+            android:text="分享"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/set_wallpaper"
+            android:text="设置壁纸"/>
+    </LinearLayout>
+</FrameLayout>
 

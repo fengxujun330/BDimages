@@ -3,7 +3,7 @@
 
 
     <scale
-        android:duration="600"
+        android:duration="450"
         android:fromXScale="0.7"
         android:fromYScale="0.7"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"

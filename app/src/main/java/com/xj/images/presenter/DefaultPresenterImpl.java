@@ -8,14 +8,21 @@ import android.widget.Toast;
 
 import com.xj.images.ImageApp;
 import com.xj.images.beans.Image;
+import com.xj.images.data.BaiduDataSourceImpl;
 import com.xj.images.data.DataSource;
 import com.xj.images.data.SoDataSource;
+import com.xj.images.data.SogouDataSource;
 import com.xj.images.view.ViewInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -31,15 +38,26 @@ public class DefaultPresenterImpl implements Presenter {
     private DataSource mDataSource;
     private int mCurrentPage = 1;
     private String mCurrentKeyWord;
+    private volatile boolean mEnd;
 
     private volatile boolean mLoading = false;
     public DefaultPresenterImpl(@NonNull ViewInterface viewInterface){
         this.mViewInterface = viewInterface;
 //        this.mDataSource = new BaiduDataSourceImpl();
         this.mDataSource = new SoDataSource();
+        mBaidu = new SogouDataSource();
+        mSo = new SoDataSource();
     }
-    @Override
+
+    private ExecutorService mPool = Executors.newSingleThreadExecutor();
+    private DataSource mBaidu;
+    private SoDataSource mSo;
+    /*@Override
     public void loadIamges() {
+        if(mEnd){
+            Toast.makeText(ImageApp.getInstance(),"只有这些图片了，亲，试试其他关键字？？？", Toast.LENGTH_LONG).show();
+            return;
+        }
         if(mLoading){
             Log.i("alanMms", "loading:" + mCurrentPage+" return");
             Toast.makeText(ImageApp.getInstance(),"正在加载" + mCurrentPage + "页数据，请稍后", Toast.LENGTH_SHORT).show();
@@ -76,23 +94,13 @@ public class DefaultPresenterImpl implements Presenter {
                             if(!mLoading){
                                 return;
                             }
-                            JSONObject root = new JSONObject(s);
-                            JSONArray datas = root.getJSONArray("list");
-                            int lenght = datas.length();
-                            if(lenght > 1){
-                                ArrayList<Image> images = new ArrayList<Image>();
-                                for(int i = 0; i < lenght; i++){
-                                    JSONObject imageJO = datas.optJSONObject(i);
-                                    String imageURL = imageJO.optString("img");
-                                    String imageThumbURL = imageJO.optString("thumb");
-                                    String imageThumbBakURL = imageJO.optString("thumb_bak");
-                                    Image image = new Image();
-                                    image.setImageURL(imageURL);
-                                    image.setImageThumbURL(imageThumbURL);
-                                    image.setImageThumbBakURL(imageThumbBakURL);
-                                    images.add(image);
+                            List<Image> images = mDataSource.getImages(s);
+                            if(null != images && 0 < images.size()){
+                                if(mDataSource.getPurPageNumber() > images.size()){
+                                    mEnd = true;
+                                }else {
+                                    mCurrentPage++;
                                 }
-                                mCurrentPage++;
                                 mViewInterface.addImages(images);
                                 mViewInterface.notifyDataChanged();
                             }else {
@@ -106,57 +114,53 @@ public class DefaultPresenterImpl implements Presenter {
                         }
                     }
                 });
-        /*Observable.create(new Observable.OnSubscribe<String>() {
+    }*/
+
+    private Object mLock = new Object();
+    private boolean mBaiduEnd = false;
+    private boolean mSoEnd = false;
+    @Override
+    public void loadIamges() {
+        if(mBaiduEnd && mSoEnd){
+            Toast.makeText(ImageApp.getInstance(),"只有这些图片了，亲，试试其他关键字？？？", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(mLoading){
+            Log.i("alanMms", "loading:" + mCurrentPage+" return");
+            Toast.makeText(ImageApp.getInstance(),"正在加载" + mCurrentPage + "页数据，请稍后", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Log.i("alanMms", "will load:" + mCurrentPage);
+        mLoading = true;
+
+        mPool.submit(new Runnable() {
             @Override
-            public void call(Subscriber<? super String> subscriber) {
-                String images = mDataSource.getData(mCurrentKeyWord, mCurrentPage);
-                if(TextUtils.isEmpty(images)){
-                    return;
+            public void run() {
+                String aJson = mBaidu.getData(mCurrentKeyWord, mCurrentPage);
+                String bJson = mSo.getData(mCurrentKeyWord, mCurrentPage);
+                List<Image> allImages = new ArrayList<Image>();
+                if(!mBaiduEnd && !TextUtils.isEmpty(aJson)){
+                    List<Image> aImages = mBaidu.getImages(aJson);
+                    if(aImages.size() < mBaidu.getPurPageNumber()){
+                        mBaiduEnd = true;
+                    }
+                    allImages.addAll(aImages);
                 }
-                subscriber.onNext(images);
+                if(!mSoEnd && !TextUtils.isEmpty(bJson)){
+                    List<Image> aImages = mSo.getImages(bJson);
+                    if(aImages.size() < mSo.getPurPageNumber()){
+                        mSoEnd = true;
+                    }
+                    allImages.addAll(aImages);
+                }
+                if(!mBaiduEnd || !mSoEnd){
+                    mCurrentPage++;
+                }
+                mLoading = false;
+                mViewInterface.addImages(allImages);
+                mViewInterface.notifyDataChanged();
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        try {
-                            JSONObject root = new JSONObject(s);
-                            JSONArray datas = root.getJSONArray("data");
-                            int lenght = datas.length();
-                            if(lenght > 1){
-                                ArrayList<Image> images = new ArrayList<Image>();
-                                for(int i = 0; i < lenght - 1; i++){
-                                    JSONObject imageJO = datas.optJSONObject(i);
-                                    String imageURL = imageJO.optString("thumbURL");
-                                    String imageThumbURL = imageJO.optString("hoverURL");
-                                    String imageThumbBakURL = imageJO.optString("middleURL");
-                                    Image image = new Image();
-                                    image.setImageURL(imageURL);
-                                    image.setImageThumbURL(imageThumbURL);
-                                    image.setImageThumbBakURL(imageThumbBakURL);
-                                    images.add(image);
-                                }
-                                mCurrentPage++;
-                                mViewInterface.addImages(images);
-                                mViewInterface.notifyDataChanged();
-                            }
-                        }catch (Exception exception){
-                            Log.i("alanMms", "", exception);
-                        }
-                    }
-                });*/
-
+        });
     }
 
     @Override
@@ -167,6 +171,9 @@ public class DefaultPresenterImpl implements Presenter {
             mCurrentPage = 1;
             mViewInterface.clearAllDatas();
             mViewInterface.notifyDataChanged();
+            mEnd = false;
+            mBaiduEnd = false;
+            mSoEnd = false;
         }
     }
 }

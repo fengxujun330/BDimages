@@ -1,8 +1,16 @@
 package com.xj.images.data;
 
+import android.util.Log;
+
+import com.xj.images.beans.Image;
 import com.xj.images.utils.OkHttpUtil;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ajun on 2017/1/21.
@@ -15,6 +23,38 @@ public class BaiduDataSourceImpl implements DataSource {
     @Override
     public String getData(String keyWord, int pageNumber) {
         return OkHttpUtil.useGetMethodGetData(getURL(keyWord,pageNumber));
+    }
+
+    @Override
+    public List<Image> getImages(String imagesJson) {
+        ArrayList<Image> images = new ArrayList<Image>();
+        try {
+            JSONObject root = new JSONObject(imagesJson);
+            JSONArray datas = root.getJSONArray("data");
+            int lenght = datas.length();
+            if(lenght > 1){
+                for(int i = 0; i < lenght - 1; i++){
+                    JSONObject imageJO = datas.optJSONObject(i);
+                    String imageURL = imageJO.optString("thumbURL");
+                    String imageThumbURL = imageJO.optString("hoverURL");
+                    String imageThumbBakURL = imageJO.optString("middleURL");
+                    Image image = new Image();
+                    image.setImageURL(imageURL);
+                    image.setImageThumbURL(imageThumbURL);
+                    image.setImageThumbBakURL(imageThumbBakURL);
+                    image.setFrom("来自百度搜索");
+                    images.add(image);
+                }
+            }
+        }catch (Exception exception){
+            Log.e("alanMms", "", exception);
+        }
+        return images;
+    }
+
+    @Override
+    public int getPurPageNumber() {
+        return PUR_PAGE_NUMBER;
     }
 
     private static String getURL(String queryWord, int pageNumber){

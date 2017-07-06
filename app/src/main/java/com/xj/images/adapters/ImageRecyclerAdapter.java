@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -17,6 +19,7 @@ import com.bumptech.glide.request.target.Target;
 import com.xj.images.R;
 import com.xj.images.activities.DisplayImageActivity;
 import com.xj.images.beans.Image;
+import com.xj.images.utils.Display;
 
 import java.util.List;
 
@@ -43,15 +46,27 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
     @Override
     public void onBindViewHolder(MyRecyclerViewHolder holder, int position) {
         final Image image = mImages.get(position);
+        ImageView imageView = holder.image1;
+        ViewGroup.LayoutParams params = imageView.getLayoutParams();
+        if(0 < image.getWidth() && 0 < image.getHeight()) {
+            float rotate = image.getHeight()/(image.getWidth() * 1.0f);
+            int heigt = (int) (rotate * Display.getDisplayWidth(mContext)/2);
+            params.height = heigt;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            imageView.setLayoutParams(params);
+        }else{
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        }
         Glide.with(mContext)
                 .load(image.getImageURL())
                 .crossFade()
-                .placeholder(R.drawable.changing)
+                .placeholder(R.drawable.so)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        Glide.with(mContext).load(image.getImageThumbURL()).into(target);
+                        Glide.with(mContext).load(image.getImageThumbURL()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(target);
                         return true;
                     }
 

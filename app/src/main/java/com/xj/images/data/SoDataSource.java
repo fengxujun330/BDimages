@@ -2,9 +2,15 @@ package com.xj.images.data;
 
 import android.util.Log;
 
+import com.xj.images.beans.Image;
 import com.xj.images.utils.OkHttpUtil;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ajun on 2017/1/22.
@@ -13,10 +19,46 @@ import java.net.URLEncoder;
 public class SoDataSource implements DataSource {
     private static final String URL_PRE = "http://image.so.com/j?";
 
-    private final static int PUR_PAGE_NUMBER = 50;
+    private final static int PUR_PAGE_NUMBER = 30;
     @Override
     public String getData(String keyWord, int pageNumber) {
         return OkHttpUtil.useGetMethodGetData(getURL(keyWord,pageNumber));
+    }
+
+    @Override
+    public List<Image> getImages(String imagesJson) {
+        ArrayList<Image> images = new ArrayList<Image>();
+        try {
+            JSONObject root = new JSONObject(imagesJson);
+            JSONArray datas = root.getJSONArray("list");
+            int lenght = datas.length();
+            if(lenght > 1){
+                for(int i = 0; i < lenght; i++){
+                    JSONObject imageJO = datas.optJSONObject(i);
+                    String imageURL = imageJO.optString("img");
+                    String imageThumbURL = imageJO.optString("thumb");
+                    String imageThumbBakURL = imageJO.optString("thumb_bak");
+                    int height = imageJO.optInt("height");
+                    int width = imageJO.optInt("width");
+                    Image image = new Image();
+                    image.setImageURL(imageURL);
+                    image.setImageThumbURL(imageThumbURL);
+                    image.setImageThumbBakURL(imageThumbBakURL);
+                    image.setFrom("来自360搜索");
+                    image.setWidth(width);
+                    image.setHeight(height);
+                    images.add(image);
+                }
+            }
+        }catch (Exception exception){
+            Log.i("alanMms", "", exception);
+        }
+        return images;
+    }
+
+    @Override
+    public int getPurPageNumber() {
+        return PUR_PAGE_NUMBER;
     }
 
     private static String getURL(String queryWord, int pageNumber){

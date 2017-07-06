@@ -11,6 +11,33 @@ public class Image implements Parcelable{
     private String imageURL;
     private String imageThumbURL;
     private String imageThumbBakURL;
+    private String from;
+    private int width;
+    private int height;
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
     public Image(){
 
@@ -19,6 +46,7 @@ public class Image implements Parcelable{
         imageURL = in.readString();
         imageThumbURL = in.readString();
         imageThumbBakURL = in.readString();
+        from = in.readString();
     }
 
     @Override
@@ -26,6 +54,7 @@ public class Image implements Parcelable{
         dest.writeString(imageURL);
         dest.writeString(imageThumbURL);
         dest.writeString(imageThumbBakURL);
+        dest.writeString(from);
     }
 
     @Override
@@ -51,6 +80,7 @@ public class Image implements Parcelable{
                 "imageURL='" + imageURL + '\'' +
                 ", imageThumbURL='" + imageThumbURL + '\'' +
                 ", imageThumbBakURL='" + imageThumbBakURL + '\'' +
+                ", from='" + from + '\'' +
                 '}';
     }
 
