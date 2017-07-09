@@ -64,6 +64,8 @@ public class SoDataSource implements DataSource {
     private static String getURL(String queryWord, int pageNumber){
         return getURL(queryWord,pageNumber,-1);
     }
+
+    //从0-4分别代表：全尺寸、大尺寸、中尺寸、小尺寸、壁纸尺寸
     private static String getURL(String queryWord, int pageNumber,int zoom){
 
         return getURL(queryWord, pageNumber, zoom, -1, -1);
@@ -82,12 +84,14 @@ public class SoDataSource implements DataSource {
             sb.append("&zoom=").append(zoom);
         }
 
-        if(0 >= height || 0 >= width){
+        /*if(0 >= height || 0 >= width){
             height = DEFAULT_HEIGHT;
             width = DEFAULT_WIDTH;
+        }*/
+        if(height > 0 && width > 0){
+            sb.append("&height=").append(height)
+                    .append("&width=").append(width);
         }
-        sb.append("&height=").append(height)
-                .append("&width=").append(width);
         Log.i("alanMms", sb.toString());
         return sb.toString();
     }

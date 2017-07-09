@@ -15,7 +15,8 @@
         android:name=".ImageApp"
         android:theme="@style/AppTheme">
         <meta-data android:name="com.xj.images.glide.ImageGlideModule" android:value="GlideModule"></meta-data>
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

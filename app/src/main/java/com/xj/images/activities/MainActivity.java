@@ -6,8 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.xj.images.R;
 import com.xj.images.adapters.ImageRecyclerAdapter;
@@ -62,9 +66,9 @@ public class MainActivity extends Activity implements ViewInterface{
                 if(newState == RecyclerView.SCROLL_STATE_IDLE /*|| newState == RecyclerView.SCROLL_STATE_SETTLING*/){
                     int pos[] = mLayoutManager.findLastVisibleItemPositions(null);
                     if (null != pos && 0 < pos.length){
-                        /*Log.i("alanMms", "images:" + mImages.size());
-                        Log.i("alanMms", (mImages.size() - 1) + "====" + pos[pos.length -1]);*/
-                        if((mImages.size() - 1) - pos[pos.length -1] < 2) {
+                        Log.d("alanF", (mImages.size() - 1) + "====" + pos[pos.length -1]);
+                        if(Math.abs((mImages.size() - 1) - pos[pos.length -1]) < 4) {
+                            Log.d("alanF", "load data");
                             mPresenter.loadIamges();
                         }
                     }

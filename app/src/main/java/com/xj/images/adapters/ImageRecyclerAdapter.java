@@ -66,7 +66,18 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<ImageRecyclerAdap
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        Glide.with(mContext).load(image.getImageThumbURL()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(target);
+                        Glide.with(mContext).load(image.getImageThumbURL()).diskCacheStrategy(DiskCacheStrategy.SOURCE).listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                Glide.with(mContext).load(image.getImageThumbBakURL()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(target);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                return false;
+                            }
+                        }).into(target);
                         return true;
                     }
 

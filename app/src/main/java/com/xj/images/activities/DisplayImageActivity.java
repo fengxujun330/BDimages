@@ -146,7 +146,20 @@ public class DisplayImageActivity extends Activity {
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                         mShowingImageUrl = mImage.getImageThumbURL();
                         Log.d("alanF", "loadImage:" + mShowingImageUrl);
-                        Glide.with(DisplayImageActivity.this).load(mImage.getImageThumbURL()).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(target);
+                        Glide.with(DisplayImageActivity.this).load(mShowingImageUrl).diskCacheStrategy(DiskCacheStrategy.SOURCE).listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                mShowingImageUrl = mImage.getImageThumbBakURL();
+                                Log.d("alanF", "loadBakImage:" + mShowingImageUrl);
+                                Glide.with(DisplayImageActivity.this).load(mShowingImageUrl).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(target);
+                                return true;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                return false;
+                            }
+                        }).into(target);
                         return true;
                     }
 

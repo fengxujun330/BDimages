@@ -38,12 +38,14 @@ public class SogouDataSource implements DataSource {
             .append("&reqType=").append("ajax")
             .append("&start=").append((pageNumber -1)* PUR_PAGE_NUMBER);
 
-        if(0 >= height || 0 >= width){
+        /*if(0 >= height || 0 >= width){
             height = DEFAULT_HEIGHT;
             width = DEFAULT_WIDTH;
+        }*/
+        if(height > 0 && width > 0) {
+            sb.append("&cheight=").append(height)
+                    .append("&cwidth=").append(width);
         }
-        sb.append("&cheight=").append(height)
-                .append("&cwidth=").append(width);
         Log.i("alanMms", sb.toString());
         return sb.toString();
     }

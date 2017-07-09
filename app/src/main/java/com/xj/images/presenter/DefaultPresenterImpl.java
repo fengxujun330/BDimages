@@ -59,11 +59,11 @@ public class DefaultPresenterImpl implements Presenter {
             return;
         }
         if(mLoading){
-            Log.i("alanMms", "loading:" + mCurrentPage+" return");
+            Log.i("alanF", "loading:" + mCurrentPage+" return");
             Toast.makeText(ImageApp.getInstance(),"正在加载" + mCurrentPage + "页数据，请稍后", Toast.LENGTH_SHORT).show();
             return;
         }
-        Log.i("alanMms", "will load:" + mCurrentPage);
+        Log.i("alanF", "will load:" + mCurrentPage);
         mLoading = true;
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -110,7 +110,7 @@ public class DefaultPresenterImpl implements Presenter {
                         }catch (Exception exception){
                             mLoading = false;
                             Toast.makeText(ImageApp.getInstance(),"加载第"+ mCurrentPage+"页数据失败",Toast.LENGTH_SHORT).show();
-                            Log.i("alanMms", "", exception);
+                            Log.i("alanF", "", exception);
                         }
                     }
                 });
@@ -121,16 +121,19 @@ public class DefaultPresenterImpl implements Presenter {
     private boolean mSoEnd = false;
     @Override
     public void loadIamges() {
+        if(TextUtils.isEmpty(mCurrentKeyWord)){
+            return;
+        }
         if(mBaiduEnd && mSoEnd){
             Toast.makeText(ImageApp.getInstance(),"只有这些图片了，亲，试试其他关键字？？？", Toast.LENGTH_LONG).show();
             return;
         }
         if(mLoading){
-            Log.i("alanMms", "loading:" + mCurrentPage+" return");
+            Log.i("alanF", "loading:" + mCurrentPage+" return");
             Toast.makeText(ImageApp.getInstance(),"正在加载" + mCurrentPage + "页数据，请稍后", Toast.LENGTH_SHORT).show();
             return;
         }
-        Log.i("alanMms", "will load:" + mCurrentPage);
+        Log.i("alanF", "will load:" + mCurrentPage);
         mLoading = true;
 
         mPool.submit(new Runnable() {
